@@ -1,5 +1,4 @@
 import pandas
-import csv
 from dash import Dash, html, dcc, Input, Output
 from plotly.express import line
 
@@ -45,34 +44,40 @@ def make_chart(region_name):
     return figure
 
 
+header = html.H1(
+    "Soul Foods Pink Morsel Sales Visualiser",
+    id="header",
+    style={
+        "textAlign": "center",
+        "marginBottom": "25px",
+        "color": "#333333",
+    },
+)
+region_filter = dcc.RadioItems(
+    id="region_filter",
+    options=[
+        {"label": "All", "value": "all"},
+        {"label": "North", "value": "north"},
+        {"label": "East", "value": "east"},
+        {"label": "South", "value": "south"},
+        {"label": "West", "value": "west"},
+    ],
+    value="all",
+    inline=True,
+    style={"marginBottom": "20px", "textAlign": "center"},
+    labelStyle={"marginRight": "15px"},
+)
+sales_graph = dcc.Graph(
+    id="sales_graph",
+    figure=make_chart("all"),
+)
+
+
 app.layout = html.Div(
     [
-        html.H1(
-            "Soul Foods Pink Morsel Sales Visualiser",
-            style={
-                "textAlign": "center",
-                "marginBottom": "25px",
-                "color": "#333333",
-            },
-        ),
-        dcc.RadioItems(
-            id="region-filter",
-            options=[
-                {"label": "All", "value": "all"},
-                {"label": "North", "value": "north"},
-                {"label": "East", "value": "east"},
-                {"label": "South", "value": "south"},
-                {"label": "West", "value": "west"},
-            ],
-            value="all",
-            inline=True,
-            style={"marginBottom": "20px", "textAlign": "center"},
-            labelStyle={"marginRight": "15px"},
-        ),
-        dcc.Graph(
-            id="sales-chart",
-            figure=make_chart("all"),
-        ),
+        header,
+        region_filter,
+        sales_graph
     ],
     style={
         "maxWidth": "1000px",
@@ -86,8 +91,8 @@ app.layout = html.Div(
 
 
 @app.callback(
-    Output("sales-chart", "figure"),
-    Input("region-filter", "value"),
+    Output("sales_graph", "figure"),
+    Input("region_filter", "value"),
 )
 def update_chart(selected_region):
     return make_chart(selected_region)
