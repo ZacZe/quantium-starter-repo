@@ -2,13 +2,11 @@ import pandas
 from dash import Dash, html, dcc, Input, Output
 from plotly.express import line
 
-
 data = pandas.read_csv("output.csv")
 data["Date"] = pandas.to_datetime(data["Date"])
 data["Sales"] = pandas.to_numeric(data["Sales"])
 
 app = Dash(__name__)
-
 
 def make_chart(region_name):
     filtered_data = data
@@ -43,7 +41,6 @@ def make_chart(region_name):
 
     return figure
 
-
 header = html.H1(
     "Soul Foods Pink Morsel Sales Visualiser",
     id="header",
@@ -53,6 +50,7 @@ header = html.H1(
         "color": "#333333",
     },
 )
+
 region_filter = dcc.RadioItems(
     id="region_filter",
     options=[
@@ -67,11 +65,11 @@ region_filter = dcc.RadioItems(
     style={"marginBottom": "20px", "textAlign": "center"},
     labelStyle={"marginRight": "15px"},
 )
+
 sales_graph = dcc.Graph(
     id="sales_graph",
     figure=make_chart("all"),
 )
-
 
 app.layout = html.Div(
     [
@@ -89,14 +87,12 @@ app.layout = html.Div(
     },
 )
 
-
 @app.callback(
     Output("sales_graph", "figure"),
     Input("region_filter", "value"),
 )
 def update_chart(selected_region):
     return make_chart(selected_region)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
